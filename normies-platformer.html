@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>NORMIE HOPPER</title>
+<style>
+  :root{
+    --ink:#48494b; --paper:#e3e5e4; --paper2:#d6d8d7; --accent:#ff4d00; --gold:#ffffff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;overflow:hidden;background:var(--paper);font-family:"Courier New",ui-monospace,Menlo,monospace;color:var(--ink);
+    -webkit-user-select:none;user-select:none;touch-action:none;}
+  #c{position:fixed;inset:0;display:block;}
+
+  /* ---------- HUD ---------- */
+  #hud{position:fixed;top:0;left:0;right:0;padding:calc(env(safe-area-inset-top,0px) + 10px) 12px 8px;
+    display:flex;align-items:flex-start;justify-content:space-between;gap:8px;pointer-events:none;z-index:10;}
+  .panel{background:var(--paper);border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:6px 10px;pointer-events:auto;}
+  #title{font-weight:bold;letter-spacing:.12em;font-size:13px;line-height:1.2;}
+  #title small{display:block;font-weight:normal;letter-spacing:.05em;font-size:9px;opacity:.7;}
+  #loader{display:flex;align-items:center;gap:6px;margin-top:6px;}
+  #idInput{width:64px;font:inherit;font-size:13px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);
+    padding:3px 5px;text-align:center;outline:none;}
+  .btn{font:inherit;font-size:11px;font-weight:bold;letter-spacing:.08em;border:2px solid var(--ink);
+    background:var(--ink);color:var(--paper);padding:4px 8px;cursor:pointer;}
+  .btn:active{transform:translate(1px,1px);}
+  .btn.ghost{background:var(--paper);color:var(--ink);}
+  #stats{text-align:right;font-size:11px;line-height:1.5;white-space:nowrap;}
+  #stats b{font-size:14px;}
+
+  /* ---------- minimap ---------- */
+  #mapWrap{position:fixed;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);z-index:10;
+    border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);background:var(--paper);padding:4px;}
+  #map{display:block;width:104px;height:104px;image-rendering:pixelated;}
+  #mapLabel{font-size:8px;letter-spacing:.12em;text-align:center;margin-top:3px;}
+
+  /* ---------- touch controls ---------- */
+  #stick{position:fixed;left:18px;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);width:118px;height:118px;
+    border:2px solid var(--ink);border-radius:50%;background:rgba(227,229,228,.55);z-index:9;display:none;}
+  #knob{position:absolute;left:50%;top:50%;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;
+    background:var(--ink);}
+  #jumpBtn{position:fixed;right:132px;bottom:calc(env(safe-area-inset-bottom,0px) + 30px);width:82px;height:82px;
+    border:2px solid var(--ink);border-radius:50%;background:var(--accent);color:#fff;font:inherit;font-weight:bold;
+    font-size:12px;letter-spacing:.1em;z-index:9;display:none;box-shadow:3px 3px 0 var(--ink);}
+  #jumpBtn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink);}
+  body.touch #stick,body.touch #jumpBtn{display:block;}
+
+  /* ---------- overlays ---------- */
+  .overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:20;
+    background:rgba(227,229,228,.88);}
+  .card{background:var(--paper);border:3px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:22px 26px;
+    text-align:center;max-width:320px;}
+  .card h1{font-size:18px;letter-spacing:.14em;margin-bottom:10px;}
+  .card p{font-size:12px;line-height:1.6;margin-bottom:14px;}
+  .hidden{display:none!important;}
+  #toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);z-index:15;font-size:11px;
+    background:var(--ink);color:var(--paper);padding:5px 12px;letter-spacing:.08em;opacity:0;transition:opacity .3s;}
+  @media (prefers-reduced-motion: reduce){ #toast{transition:none;} }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div id="hud">
+  <div class="panel">
+    <div id="title">NORMIE HOPPER<small>3D pixel platformer · api.normies.art</small></div>
+    <div id="loader">
+      <input id="idInput" type="number" min="0" max="9999" value="0" inputmode="numeric" aria-label="Normie token ID">
+      <button class="btn" id="loadBtn">LOAD</button>
+      <button class="btn ghost" id="randBtn" title="Random Normie">RND</button>
+    </div>
+  </div>
+  <div class="panel" id="stats">
+    NORMIE <b id="sId">—</b><br>
+    TIME <b id="sTime">0.0</b> · FALLS <b id="sFalls">0</b>
+  </div>
+</div>
+
+<div id="mapWrap"><canvas id="map" width="40" height="40"></canvas><div id="mapLabel">YOU ARE HERE</div></div>
+
+<div id="stick"><div id="knob"></div></div>
+<button id="jumpBtn">JUMP</button>
+
+<div class="overlay" id="intro">
+  <div class="card">
+    <h1>NORMIE HOPPER</h1>
+    <p>The face is the level. Hop from pixel to pixel — dark pixels are platforms, light pixels are the void.
+       Reach the beacon at the top of the head.<br><br>
+       <b>Touch:</b> left stick to move, orange button to jump.<br>
+       <b>Keys:</b> WASD / arrows + space.</p>
+    <button class="btn" id="startBtn">START</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="win">
+  <div class="card">
+    <h1>FACE CLEARED</h1>
+    <p id="winText"></p>
+    <button class="btn" id="againBtn">NEXT NORMIE</button>
+    <button class="btn ghost" id="replayBtn">REPLAY</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(() => {
+const INK = 0x48494b, PAPER = 0xe3e5e4, ACCENT = 0xff4d00;
+const GRID = 40, CELL = 1;
+
+/* ---------------- three.js setup ---------------- */
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(PAPER);
+scene.fog = new THREE.Fog(PAPER, 26, 52);
+
+const camera = new THREE.PerspectiveCamera(55, 1, .1, 200);
+const sun = new THREE.DirectionalLight(0xffffff, .9);
+sun.position.set(8, 14, 6);
+scene.add(sun, new THREE.AmbientLight(0xffffff, .55));
+
+function resize(){
+  renderer.setSize(innerWidth, innerHeight, false);
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize); resize();
+
+/* ---------------- level state ---------------- */
+let bits = null;               // Uint8Array 1600
+let heights = null;            // Float32Array 1600, NaN = void
+let tokenId = null;
+let spawn = {r:0,c:0}, goal = {r:0,c:0};
+let columns = null, goalBeacon = null;
+
+const seedNoise = (seed) => {
+  // deterministic value noise per token so each Normie plays differently
+  const rnd = (x,y) => { const s = Math.sin(x*127.1 + y*311.7 + seed*74.7)*43758.5453; return s - Math.floor(s); };
+  return (x,y) => {
+    const xi=Math.floor(x), yi=Math.floor(y), xf=x-xi, yf=y-yi;
+    const u=xf*xf*(3-2*xf), v=yf*yf*(3-2*yf);
+    return rnd(xi,yi)*(1-u)*(1-v)+rnd(xi+1,yi)*u*(1-v)+rnd(xi,yi+1)*(1-u)*v+rnd(xi+1,yi+1)*u*v;
+  };
+};
+
+const idx = (r,c) => r*GRID + c;
+const inGrid = (r,c) => r>=0 && r<GRID && c>=0 && c<GRID;
+const hAt = (r,c) => (inGrid(r,c) && bits[idx(r,c)]) ? heights[idx(r,c)] : NaN;
+const worldX = c => (c - GRID/2 + .5) * CELL;
+const worldZ = r => (r - GRID/2 + .5) * CELL;
+
+function buildLevel(id){
+  // clear old
+  if (columns){ scene.remove(columns); columns.geometry.dispose(); columns.material.dispose(); }
+  if (goalBeacon){ scene.remove(goalBeacon); }
+
+  const noise = seedNoise(id);
+  heights = new Float32Array(GRID*GRID);
+  let count = 0;
+  for (let r=0;r<GRID;r++) for (let c=0;c<GRID;c++){
+    const i = idx(r,c);
+    if (bits[i]){ heights[i] = 1.1 + noise(c*.35, r*.35)*1.0; count++; } // gentle, always jumpable
+    else heights[i] = NaN;
+  }
+
+  // spawn: on-pixel nearest bottom-center; goal: on-pixel nearest top-center
+  const pick = (fromRow, dir) => {
+    for (let r=fromRow; r>=0 && r<GRID; r+=dir){
+      let best=null, bd=1e9;
+      for (let c=0;c<GRID;c++) if (bits[idx(r,c)]){ const d=Math.abs(c-GRID/2); if (d<bd){bd=d;best=c;} }
+      if (best!==null) return {r, c:best};
+    }
+    return {r:GRID>>1, c:GRID>>1};
+  };
+  spawn = pick(GRID-1,-1);
+  goal  = pick(0, 1);
+
+  // instanced columns
+  const geo = new THREE.BoxGeometry(CELL*.96, 1, CELL*.96);
+  geo.translate(0,-.5,0); // top at y=0 local
+  const mat = new THREE.MeshLambertMaterial({color: INK});
+  columns = new THREE.InstancedMesh(geo, mat, count);
+  const m = new THREE.Matrix4();
+  const colr = new THREE.Color();
+  let k=0;
+  for (let r=0;r<GRID;r++) for (let c=0;c<GRID;c++){
+    const i=idx(r,c); if (!bits[i]) continue;
+    const h = heights[i];
+    m.makeScale(1, h+6, 1);           // extend columns downward
+    m.setPosition(worldX(c), h, worldZ(r));
+    columns.setMatrixAt(k, m);
+    // subtle tonal variation so the surface reads in monochrome
+    const t = .92 + ((r*7+c*13)%9)*.012;
+    colr.setHex(INK).multiplyScalar(t);
+    columns.setColorAt(k, colr);
+    k++;
+  }
+  columns.instanceMatrix.needsUpdate = true;
+  if (columns.instanceColor) columns.instanceColor.needsUpdate = true;
+  scene.add(columns);
+
+  // goal beacon: white pillar of light
+  const bg = new THREE.Group();
+  const pillar = new THREE.Mesh(
+    new THREE.CylinderGeometry(.16,.16,14,10),
+    new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:.75})
+  );
+  pillar.position.y = hAt(goal.r,goal.c) + 7;
+  const pad = new THREE.Mesh(
+    new THREE.BoxGeometry(CELL*.98,.14,CELL*.98),
+    new THREE.MeshBasicMaterial({color:0xffffff})
+  );
+  pad.position.y = hAt(goal.r,goal.c) + .08;
+  bg.add(pillar, pad);
+  bg.position.set(worldX(goal.c), 0, worldZ(goal.r));
+  goalBeacon = bg;
+  scene.add(bg);
+}
+
+/* ---------------- player ---------------- */
+const player = new THREE.Group();
+const bodyMesh = new THREE.Mesh(
+  new THREE.BoxGeometry(.62,.62,.62),
+  new THREE.MeshLambertMaterial({color: ACCENT})
+);
+bodyMesh.position.y = .31;
+// tiny "eyes" so it reads as a creature among the faces
+const eyeGeo = new THREE.BoxGeometry(.1,.14,.05);
+const eyeMat = new THREE.MeshBasicMaterial({color:0xffffff});
+const e1 = new THREE.Mesh(eyeGeo, eyeMat); e1.position.set(-.14,.4,.32);
+const e2 = new THREE.Mesh(eyeGeo, eyeMat); e2.position.set(.14,.4,.32);
+player.add(bodyMesh, e1, e2);
+scene.add(player);
+
+const P = { x:0, z:0, y:0, vy:0, grounded:false, coyote:0, lastSafe:{r:0,c:0}, facing:0 };
+const SPEED = 4.6, GRAV = -22, JUMPV = 8.6;
+
+function respawn(at){
+  P.x = worldX(at.c); P.z = worldZ(at.r);
+  P.y = hAt(at.r, at.c); P.vy = 0; P.grounded = true;
+  P.lastSafe = {...at};
+}
+
+/* ---------------- input ---------------- */
+const keys = {};
+addEventListener('keydown', e => { keys[e.code]=true; if (e.code==='Space') e.preventDefault(); });
+addEventListener('keyup',   e => keys[e.code]=false);
+
+let stickVec = {x:0,y:0};
+const stick = document.getElementById('stick'), knob = document.getElementById('knob');
+let stickTouch = null;
+function setKnob(dx,dy){ knob.style.transform = `translate(${dx}px,${dy}px)`; }
+stick.addEventListener('touchstart', e => {
+  stickTouch = e.changedTouches[0].identifier; e.preventDefault();
+}, {passive:false});
+addEventListener('touchmove', e => {
+  for (const t of e.changedTouches){
+    if (t.identifier !== stickTouch) continue;
+    const r = stick.getBoundingClientRect();
+    let dx = t.clientX - (r.left + r.width/2), dy = t.clientY - (r.top + r.height/2);
+    const len = Math.hypot(dx,dy), max = r.width/2 - 20;
+    if (len > max){ dx = dx/len*max; dy = dy/len*max; }
+    stickVec = {x: dx/max, y: dy/max};
+    setKnob(dx,dy);
+  }
+}, {passive:false});
+addEventListener('touchend', e => {
+  for (const t of e.changedTouches) if (t.identifier === stickTouch){
+    stickTouch = null; stickVec = {x:0,y:0}; setKnob(0,0);
+  }
+});
+let jumpQueued = false;
+document.getElementById('jumpBtn').addEventListener('touchstart', e => { e.preventDefault(); jumpQueued = true; }, {passive:false});
+if ('ontouchstart' in window) document.body.classList.add('touch');
+
+/* ---------------- game state / stats ---------------- */
+let running = false, t0 = 0, elapsed = 0, falls = 0, won = false;
+const sTime = document.getElementById('sTime'), sFalls = document.getElementById('sFalls'), sId = document.getElementById('sId');
+const toastEl = document.getElementById('toast');
+let toastT = null;
+function toast(msg){
+  toastEl.textContent = msg; toastEl.style.opacity = 1;
+  clearTimeout(toastT); toastT = setTimeout(()=>toastEl.style.opacity=0, 2200);
+}
+
+/* ---------------- minimap ---------------- */
+const mapCtx = document.getElementById('map').getContext('2d');
+function drawMap(){
+  if (!bits) return;
+  const img = mapCtx.createImageData(GRID, GRID);
+  for (let i=0;i<GRID*GRID;i++){
+    const on = bits[i];
+    img.data[i*4]   = on ? 0x48 : 0xe3;
+    img.data[i*4+1] = on ? 0x49 : 0xe5;
+    img.data[i*4+2] = on ? 0x4b : 0xe4;
+    img.data[i*4+3] = 255;
+  }
+  mapCtx.putImageData(img,0,0);
+  // goal
+  mapCtx.fillStyle = '#ffffff';
+  mapCtx.fillRect(goal.c-1, goal.r-1, 3, 3);
+  mapCtx.strokeStyle = '#48494b'; mapCtx.lineWidth = .5;
+  mapCtx.strokeRect(goal.c-1.5, goal.r-1.5, 4, 4);
+  // player
+  const pc = Math.round((P.x/CELL) + GRID/2 - .5), pr = Math.round((P.z/CELL) + GRID/2 - .5);
+  mapCtx.fillStyle = '#ff4d00';
+  mapCtx.fillRect(pc-1, pr-1, 3, 3);
+}
+
+/* ---------------- fetch normie ---------------- */
+const DEMO = (() => { // fallback smiley if API unreachable
+  const b = new Uint8Array(GRID*GRID);
+  const set=(r,c)=>{ if(inGrid(r,c)) b[idx(r,c)]=1; };
+  for(let r=6;r<36;r++)for(let c=6;c<34;c++){const d=Math.hypot(r-21,c-20);if(d<14.5)set(r,c);}
+  for(let r=14;r<18;r++){for(let c=12;c<16;c++)b[idx(r,c)]=0;for(let c=24;c<28;c++)b[idx(r,c)]=0;}
+  for(let c=13;c<27;c++)b[idx(27,c)]=0,b[idx(28,c)]=0;
+  return b;
+})();
+
+async function loadNormie(id){
+  toast(`LOADING NORMIE #${id}…`);
+  let str = null;
+  try {
+    const res = await fetch(`https://api.normies.art/normie/${id}/pixels`);
+    const text = await res.text();
+    // accept plain string or any JSON shape containing a 1600-char bitstring
+    const match = text.match(/[01]{1600}/);
+    if (match) str = match[0];
+  } catch(e){ /* offline / CORS */ }
+
+  if (str){
+    bits = new Uint8Array(GRID*GRID);
+    for (let i=0;i<1600;i++) bits[i] = str.charCodeAt(i) === 49 ? 1 : 0;
+    tokenId = id;
+    toast(`NORMIE #${id} LOADED`);
+  } else {
+    bits = DEMO.slice(); tokenId = id;
+    toast('API UNREACHABLE — DEMO FACE LOADED');
+  }
+  sId.textContent = '#' + tokenId;
+  buildLevel(id);
+  respawn(spawn);
+  elapsed = 0; falls = 0; won = false;
+  sFalls.textContent = falls;
+  t0 = performance.now();
+  drawMap();
+}
+
+/* ---------------- physics + camera ---------------- */
+const camTarget = new THREE.Vector3();
+function step(dt){
+  // input vector (screen space: up = -z)
+  let ix = (keys.KeyD||keys.ArrowRight?1:0) - (keys.KeyA||keys.ArrowLeft?1:0) + stickVec.x;
+  let iz = (keys.KeyS||keys.ArrowDown?1:0) - (keys.KeyW||keys.ArrowUp?1:0) + stickVec.y;
+  const len = Math.hypot(ix,iz); if (len>1){ ix/=len; iz/=len; }
+
+  const nx = P.x + ix*SPEED*dt;
+  const nz = P.z + iz*SPEED*dt;
+
+  // side collision: block walking into a column wall taller than you can step onto
+  const cellOf = (x,z) => ({ c: Math.round(x/CELL + GRID/2 - .5), r: Math.round(z/CELL + GRID/2 - .5) });
+  const tryMove = (x,z) => {
+    const {r,c} = cellOf(x,z);
+    const top = hAt(r,c);
+    if (!isNaN(top) && top > P.y + .45) return false; // wall
+    return true;
+  };
+  if (tryMove(nx, P.z)) P.x = nx;
+  if (tryMove(P.x, nz)) P.z = nz;
+
+  if (len > .05) P.facing = Math.atan2(ix, iz);
+
+  // vertical
+  P.vy += GRAV*dt;
+  P.y += P.vy*dt;
+
+  const {r,c} = cellOf(P.x, P.z);
+  const top = hAt(r,c);
+  if (!isNaN(top) && P.vy <= 0 && P.y <= top + .02 && P.y > top - .8){
+    P.y = top; P.vy = 0; P.grounded = true; P.coyote = .12;
+    P.lastSafe = {r,c};
+  } else {
+    P.coyote -= dt;
+    P.grounded = false;
+  }
+
+  // jump (keyboard or button), with coyote time
+  const wantJump = keys.Space || jumpQueued;
+  if (wantJump && (P.grounded || P.coyote > 0)){
+    P.vy = JUMPV; P.grounded = false; P.coyote = 0;
+  }
+  jumpQueued = false;
+
+  // fell into the void
+  if (P.y < -8){
+    falls++; sFalls.textContent = falls;
+    respawn(P.lastSafe);
+    toast('INTO THE VOID');
+  }
+
+  // reach goal
+  if (!won && r===goal.r && c===goal.c && P.grounded){
+    won = true; running = false;
+    const t = ((performance.now()-t0)/1000).toFixed(1);
+    document.getElementById('winText').innerHTML =
+      `You traversed Normie <b>#${tokenId}</b><br>TIME ${t}s · FALLS ${falls}`;
+    document.getElementById('win').classList.remove('hidden');
+  }
+
+  // visuals
+  player.position.set(P.x, P.y, P.z);
+  player.rotation.y += (P.facing - player.rotation.y)*.2;
+  const squash = P.grounded ? 1 : 1.12;
+  bodyMesh.scale.set(2-squash, squash, 2-squash);
+
+  if (goalBeacon) goalBeacon.children[0].material.opacity = .55 + Math.sin(performance.now()*.004)*.25;
+
+  camTarget.set(P.x, P.y + 6.4, P.z + 8.2);
+  camera.position.lerp(camTarget, 1 - Math.pow(.001, dt));
+  camera.lookAt(P.x, P.y + .8, P.z);
+}
+
+/* ---------------- main loop ---------------- */
+let last = performance.now(), mapTick = 0;
+function loop(now){
+  requestAnimationFrame(loop);
+  const dt = Math.min((now-last)/1000, .05); last = now;
+  if (running && bits) {
+    step(dt);
+    elapsed = (now - t0)/1000;
+    sTime.textContent = elapsed.toFixed(1);
+    if ((mapTick += dt) > .15){ mapTick = 0; drawMap(); }
+  }
+  renderer.render(scene, camera);
+}
+requestAnimationFrame(loop);
+
+/* ---------------- UI wiring ---------------- */
+const idInput = document.getElementById('idInput');
+const clampId = v => Math.max(0, Math.min(9999, v|0));
+document.getElementById('loadBtn').addEventListener('click', () => {
+  loadNormie(clampId(+idInput.value || 0)); running = true;
+  document.getElementById('win').classList.add('hidden');
+});
+document.getElementById('randBtn').addEventListener('click', () => {
+  const id = Math.floor(Math.random()*10000);
+  idInput.value = id; loadNormie(id); running = true;
+  document.getElementById('win').classList.add('hidden');
+});
+document.getElementById('startBtn').addEventListener('click', () => {
+  document.getElementById('intro').classList.add('hidden');
+  loadNormie(clampId(+idInput.value || 0)); running = true;
+});
+document.getElementById('againBtn').addEventListener('click', () => {
+  const id = Math.floor(Math.random()*10000);
+  idInput.value = id;
+  document.getElementById('win').classList.add('hidden');
+  loadNormie(id); running = true;
+});
+document.getElementById('replayBtn').addEventListener('click', () => {
+  document.getElementById('win').classList.add('hidden');
+  respawn(spawn); elapsed = 0; falls = 0; won = false;
+  sFalls.textContent = 0; t0 = performance.now(); running = true;
+});
+
+// initial idle camera framing
+camera.position.set(0, 18, 26);
+camera.lookAt(0, 0, 0);
+})();
+</script>
+</body>
+</html>
