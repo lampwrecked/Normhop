@@ -6,56 +6,54 @@
 <title>NORMIE HOPPER</title>
 <style>
   :root{
-    --ink:#48494b; --paper:#e3e5e4; --paper2:#d6d8d7; --accent:#ff4d00; --gold:#ffffff;
+    --ink:#0a0a0a; --paper:#e3e5e4; --mid:#48494b; --accent:#ff4d00;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{height:100%;overflow:hidden;background:var(--paper);font-family:"Courier New",ui-monospace,Menlo,monospace;color:var(--ink);
+  html,body{height:100%;overflow:hidden;background:var(--ink);font-family:"Courier New",ui-monospace,Menlo,monospace;color:var(--paper);
     -webkit-user-select:none;user-select:none;touch-action:none;}
   #c{position:fixed;inset:0;display:block;}
 
   /* ---------- HUD ---------- */
   #hud{position:fixed;top:0;left:0;right:0;padding:calc(env(safe-area-inset-top,0px) + 10px) 12px 8px;
     display:flex;align-items:flex-start;justify-content:space-between;gap:8px;pointer-events:none;z-index:10;}
-  .panel{background:var(--paper);border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:6px 10px;pointer-events:auto;}
+  .panel{background:var(--ink);border:2px solid var(--paper);box-shadow:3px 3px 0 var(--paper);padding:6px 10px;pointer-events:auto;}
   #title{font-weight:bold;letter-spacing:.12em;font-size:13px;line-height:1.2;}
   #title small{display:block;font-weight:normal;letter-spacing:.05em;font-size:9px;opacity:.7;}
   #loader{display:flex;align-items:center;gap:6px;margin-top:6px;}
-  #idInput{width:64px;font:inherit;font-size:13px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);
-    padding:3px 5px;text-align:center;outline:none;}
-  .btn{font:inherit;font-size:11px;font-weight:bold;letter-spacing:.08em;border:2px solid var(--ink);
-    background:var(--ink);color:var(--paper);padding:4px 8px;cursor:pointer;}
+  .btn{font:inherit;font-size:11px;font-weight:bold;letter-spacing:.08em;border:2px solid var(--paper);
+    background:var(--paper);color:var(--ink);padding:4px 8px;cursor:pointer;}
   .btn:active{transform:translate(1px,1px);}
-  .btn.ghost{background:var(--paper);color:var(--ink);}
+  .btn.ghost{background:var(--ink);color:var(--paper);}
   #stats{text-align:right;font-size:11px;line-height:1.5;white-space:nowrap;}
   #stats b{font-size:14px;}
 
-  /* ---------- minimap ---------- */
-  #mapWrap{position:fixed;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);z-index:10;
-    border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);background:var(--paper);padding:4px;}
-  #map{display:block;width:104px;height:104px;image-rendering:pixelated;}
-  #mapLabel{font-size:8px;letter-spacing:.12em;text-align:center;margin-top:3px;}
+  /* ---------- minimap (top bar) ---------- */
+  #mapWrap{border:2px solid var(--paper);box-shadow:3px 3px 0 var(--paper);background:var(--ink);padding:3px;
+    pointer-events:auto;flex-shrink:0;}
+  #map{display:block;width:76px;height:76px;image-rendering:pixelated;}
+  #mapLabel{font-size:7px;letter-spacing:.1em;text-align:center;margin-top:2px;}
 
   /* ---------- touch controls ---------- */
   #stick{position:fixed;left:18px;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);width:118px;height:118px;
-    border:2px solid var(--ink);border-radius:50%;background:rgba(227,229,228,.55);z-index:9;display:none;}
+    border:2px solid var(--paper);border-radius:50%;background:rgba(227,229,228,.12);z-index:9;display:none;}
   #knob{position:absolute;left:50%;top:50%;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;
-    background:var(--ink);}
-  #jumpBtn{position:fixed;right:132px;bottom:calc(env(safe-area-inset-bottom,0px) + 30px);width:82px;height:82px;
-    border:2px solid var(--ink);border-radius:50%;background:var(--accent);color:#fff;font:inherit;font-weight:bold;
-    font-size:12px;letter-spacing:.1em;z-index:9;display:none;box-shadow:3px 3px 0 var(--ink);}
-  #jumpBtn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink);}
+    background:var(--paper);}
+  #jumpBtn{position:fixed;right:18px;bottom:calc(env(safe-area-inset-bottom,0px) + 30px);width:88px;height:88px;
+    border:2px solid var(--paper);border-radius:50%;background:var(--accent);color:#fff;font:inherit;font-weight:bold;
+    font-size:12px;letter-spacing:.1em;z-index:9;display:none;box-shadow:3px 3px 0 var(--paper);}
+  #jumpBtn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--paper);}
   body.touch #stick,body.touch #jumpBtn{display:block;}
 
   /* ---------- overlays ---------- */
   .overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:20;
-    background:rgba(227,229,228,.88);}
-  .card{background:var(--paper);border:3px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:22px 26px;
+    background:rgba(10,10,10,.88);}
+  .card{background:var(--ink);border:3px solid var(--paper);box-shadow:6px 6px 0 var(--paper);padding:22px 26px;
     text-align:center;max-width:320px;}
   .card h1{font-size:18px;letter-spacing:.14em;margin-bottom:10px;}
   .card p{font-size:12px;line-height:1.6;margin-bottom:14px;}
   .hidden{display:none!important;}
   #toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);z-index:15;font-size:11px;
-    background:var(--ink);color:var(--paper);padding:5px 12px;letter-spacing:.08em;opacity:0;transition:opacity .3s;}
+    background:var(--paper);color:var(--ink);padding:5px 12px;letter-spacing:.08em;opacity:0;transition:opacity .3s;}
   @media (prefers-reduced-motion: reduce){ #toast{transition:none;} }
 </style>
 </head>
@@ -66,18 +64,16 @@
   <div class="panel">
     <div id="title">NORMIE HOPPER<small>3D pixel platformer · api.normies.art</small></div>
     <div id="loader">
-      <input id="idInput" type="number" min="0" max="9999" value="0" inputmode="numeric" aria-label="Normie token ID">
-      <button class="btn" id="loadBtn">LOAD</button>
-      <button class="btn ghost" id="randBtn" title="Random Normie">RND</button>
+      <button class="btn ghost" id="lbBtn" title="Leaderboard">BOARD</button>
     </div>
   </div>
+  <div id="mapWrap"><canvas id="map" width="40" height="40"></canvas><div id="mapLabel">YOU ARE HERE</div></div>
   <div class="panel" id="stats">
-    NORMIE <b id="sId">—</b><br>
+    LEVEL <b id="sLvl">—</b> · <span id="sId">#—</span><br>
+    SCORE <b id="sScore">0</b><br>
     TIME <b id="sTime">0.0</b> · FALLS <b id="sFalls">0</b>
   </div>
 </div>
-
-<div id="mapWrap"><canvas id="map" width="40" height="40"></canvas><div id="mapLabel">YOU ARE HERE</div></div>
 
 <div id="stick"><div id="knob"></div></div>
 <button id="jumpBtn">JUMP</button>
@@ -85,8 +81,10 @@
 <div class="overlay" id="intro">
   <div class="card">
     <h1>NORMIE HOPPER</h1>
-    <p>The face is the level. Hop from pixel to pixel — dark pixels are platforms, light pixels are the void.
-       Reach the beacon at the top of the head.<br><br>
+    <p>Every Normie is a level — <b>#0 is Level 1</b>, and clearing a face loads the next.
+       Only the white pixels hold weight; ropes bridge the long gaps.
+       From <b>Level 10</b> enemies patrol the faces — a new kind every level, and they push.
+       Faster runs score more, falls cost you.<br><br>
        <b>Touch:</b> left stick to move, orange button to jump.<br>
        <b>Keys:</b> WASD / arrows + space.</p>
     <button class="btn" id="startBtn">START</button>
@@ -95,10 +93,23 @@
 
 <div class="overlay hidden" id="win">
   <div class="card">
-    <h1>FACE CLEARED</h1>
+    <h1>LEVEL CLEARED</h1>
     <p id="winText"></p>
-    <button class="btn" id="againBtn">NEXT NORMIE</button>
+    <div id="saveRow" style="display:flex;gap:6px;justify-content:center;margin-bottom:12px;">
+      <input id="nameInput" maxlength="12" placeholder="NAME" aria-label="Leaderboard name"
+        style="width:110px;font:inherit;font-size:12px;border:2px solid var(--paper);background:var(--ink);color:var(--paper);padding:4px 6px;text-transform:uppercase;outline:none;">
+      <button class="btn" id="saveBtn">SAVE</button>
+    </div>
+    <button class="btn" id="againBtn">NEXT LEVEL</button>
     <button class="btn ghost" id="replayBtn">REPLAY</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="lb">
+  <div class="card">
+    <h1>LEADERBOARD</h1>
+    <ol id="lbList" style="text-align:left;font-size:12px;line-height:1.9;margin:0 0 14px 20px;"></ol>
+    <button class="btn" id="lbClose">CLOSE</button>
   </div>
 </div>
 
@@ -107,21 +118,26 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (() => {
-const INK = 0x48494b, PAPER = 0xe3e5e4, ACCENT = 0xff4d00;
+const VOID = 0x0a0a0a, WHITE = 0xe3e5e4, ACCENT = 0xff4d00;
 const GRID = 40, CELL = 1;
 
 /* ---------------- three.js setup ---------------- */
 const canvas = document.getElementById('c');
-const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+const IS_TOUCH = 'ontouchstart' in window;
+const renderer = new THREE.WebGLRenderer({
+  canvas,
+  antialias: !IS_TOUCH,                                // AA off on mobile GPUs
+  powerPreference: 'high-performance'
+});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, IS_TOUCH ? 1.5 : 2));
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(PAPER);
-scene.fog = new THREE.Fog(PAPER, 26, 52);
+scene.background = new THREE.Color(VOID);
+scene.fog = new THREE.Fog(VOID, 24, 48);
 
 const camera = new THREE.PerspectiveCamera(55, 1, .1, 200);
-const sun = new THREE.DirectionalLight(0xffffff, .9);
+const sun = new THREE.DirectionalLight(0xffffff, .85);
 sun.position.set(8, 14, 6);
-scene.add(sun, new THREE.AmbientLight(0xffffff, .55));
+scene.add(sun, new THREE.AmbientLight(0xffffff, .5));
 
 function resize(){
   renderer.setSize(innerWidth, innerHeight, false);
@@ -130,15 +146,27 @@ function resize(){
 }
 addEventListener('resize', resize); resize();
 
+/* ---------------- neon gap glow ---------------- */
+// shared cycling color: edge rims + abyss floor glow, animated in the main loop
+const neonMat = new THREE.MeshBasicMaterial({color: 0x00ffcc});
+const abyssMat = new THREE.MeshBasicMaterial({color: 0x00332a});
+const abyss = new THREE.Mesh(new THREE.PlaneGeometry(220, 220), abyssMat);
+abyss.rotation.x = -Math.PI/2;
+abyss.position.y = -5;
+scene.add(abyss);
+let neonHue = .45;
+let edgeMesh = null;
+
 /* ---------------- level state ---------------- */
-let bits = null;               // Uint8Array 1600
+let rawBits = null;            // as fetched from the API
+let bits = null;               // walkable mask — exactly the data, no inversion
 let heights = null;            // Float32Array 1600, NaN = void
+let ropeH = null;              // rope heights per cell, NaN = none
 let tokenId = null;
 let spawn = {r:0,c:0}, goal = {r:0,c:0};
-let columns = null, goalBeacon = null;
+let columns = null, goalBeacon = null, ropeGroup = null;
 
 const seedNoise = (seed) => {
-  // deterministic value noise per token so each Normie plays differently
   const rnd = (x,y) => { const s = Math.sin(x*127.1 + y*311.7 + seed*74.7)*43758.5453; return s - Math.floor(s); };
   return (x,y) => {
     const xi=Math.floor(x), yi=Math.floor(y), xf=x-xi, yf=y-yi;
@@ -149,25 +177,137 @@ const seedNoise = (seed) => {
 
 const idx = (r,c) => r*GRID + c;
 const inGrid = (r,c) => r>=0 && r<GRID && c>=0 && c<GRID;
-const hAt = (r,c) => (inGrid(r,c) && bits[idx(r,c)]) ? heights[idx(r,c)] : NaN;
 const worldX = c => (c - GRID/2 + .5) * CELL;
 const worldZ = r => (r - GRID/2 + .5) * CELL;
 
+// surface height at a cell: platform top, else rope, else NaN
+function hAt(r,c){
+  if (!inGrid(r,c)) return NaN;
+  const i = idx(r,c);
+  if (bits[i]) return heights[i];
+  if (!isNaN(ropeH[i])) return ropeH[i];
+  return NaN;
+}
+const isRope = (r,c) => inGrid(r,c) && !bits[idx(r,c)] && !isNaN(ropeH[idx(r,c)]);
+
+/* ---------------- connectivity + tightropes ---------------- */
+// Walk/jump reachability: 8-neighbors (dist 1) + straight jumps over 1-2 void cells.
+function computeComponents(){
+  const comp = new Int16Array(GRID*GRID).fill(-1);
+  let nComp = 0;
+  const stack = [];
+  for (let r0=0;r0<GRID;r0++) for (let c0=0;c0<GRID;c0++){
+    const i0 = idx(r0,c0);
+    if (!bits[i0] || comp[i0] !== -1) continue;
+    comp[i0] = nComp; stack.push([r0,c0]);
+    while (stack.length){
+      const [r,c] = stack.pop();
+      const link = (rr,cc) => {
+        if (inGrid(rr,cc) && bits[idx(rr,cc)] && comp[idx(rr,cc)] === -1){
+          comp[idx(rr,cc)] = nComp; stack.push([rr,cc]);
+        }
+      };
+      // adjacent (incl. diagonal)
+      for (let dr=-1;dr<=1;dr++) for (let dc=-1;dc<=1;dc++) if (dr||dc) link(r+dr,c+dc);
+      // straight jumps over gaps of 1 or 2 void cells
+      for (const [dr,dc] of [[0,1],[0,-1],[1,0],[-1,0]]){
+        for (let g=2;g<=3;g++){
+          let clear = true;
+          for (let s=1;s<g;s++) if (inGrid(r+dr*s,c+dc*s) && bits[idx(r+dr*s,c+dc*s)]) { clear = false; break; }
+          if (clear) link(r+dr*g, c+dc*g);
+        }
+      }
+    }
+    nComp++;
+  }
+  return {comp, nComp};
+}
+
+function buildRopes(){
+  ropeH = new Float32Array(GRID*GRID).fill(NaN);
+  const ropes = []; // {ar,ac,br,bc}
+  let guard = 0;
+  while (guard++ < 64){
+    const {comp, nComp} = computeComponentsWithRopes();
+    if (nComp <= 1) break;
+    const main = comp[idx(spawn.r, spawn.c)];
+    // find closest cell pair between main component and any other
+    const A = [], B = [];
+    for (let r=0;r<GRID;r++) for (let c=0;c<GRID;c++){
+      const i = idx(r,c); if (!bits[i]) continue;
+      (comp[i] === main ? A : B).push([r,c]);
+    }
+    if (!B.length) break;
+    let best = null, bd = 1e9;
+    for (const [ar,ac] of A) for (const [br,bc] of B){
+      const d = (ar-br)*(ar-br) + (ac-bc)*(ac-bc);
+      if (d < bd){ bd = d; best = {ar,ac,br,bc}; }
+    }
+    if (!best) break;
+    // lay rope along Bresenham line, lerped heights
+    const {ar,ac,br,bc} = best;
+    const hA = heights[idx(ar,ac)], hB = heights[idx(br,bc)];
+    const steps = Math.max(Math.abs(br-ar), Math.abs(bc-ac));
+    for (let s=1;s<steps;s++){
+      const t = s/steps;
+      const r = Math.round(ar + (br-ar)*t), c = Math.round(ac + (bc-ac)*t);
+      const i = idx(r,c);
+      if (!bits[i]) ropeH[i] = hA + (hB-hA)*t;
+    }
+    ropes.push(best);
+  }
+  return ropes;
+}
+
+// components where rope cells also count as connectors
+function computeComponentsWithRopes(){
+  const walk = (r,c) => inGrid(r,c) && (bits[idx(r,c)] || !isNaN(ropeH[idx(r,c)]));
+  const comp = new Int16Array(GRID*GRID).fill(-1);
+  let nComp = 0;
+  const stack = [];
+  for (let r0=0;r0<GRID;r0++) for (let c0=0;c0<GRID;c0++){
+    if (!walk(r0,c0) || comp[idx(r0,c0)] !== -1) continue;
+    comp[idx(r0,c0)] = nComp; stack.push([r0,c0]);
+    while (stack.length){
+      const [r,c] = stack.pop();
+      const link = (rr,cc) => {
+        if (walk(rr,cc) && comp[idx(rr,cc)] === -1){ comp[idx(rr,cc)] = nComp; stack.push([rr,cc]); }
+      };
+      for (let dr=-1;dr<=1;dr++) for (let dc=-1;dc<=1;dc++) if (dr||dc) link(r+dr,c+dc);
+      for (const [dr,dc] of [[0,1],[0,-1],[1,0],[-1,0]]){
+        for (let g=2;g<=3;g++){
+          let clear = true;
+          for (let s=1;s<g;s++){ const rr=r+dr*s, cc=c+dc*s; if (walk(rr,cc)) { clear = false; break; } }
+          if (clear) link(r+dr*g, c+dc*g);
+        }
+      }
+    }
+    nComp++;
+  }
+  // count only components that contain at least one real platform
+  let real = 0; const seen = new Set();
+  for (let i=0;i<GRID*GRID;i++) if (bits[i] && !seen.has(comp[i])){ seen.add(comp[i]); real++; }
+  return {comp, nComp: real};
+}
+
+/* ---------------- level build ---------------- */
 function buildLevel(id){
-  // clear old
   if (columns){ scene.remove(columns); columns.geometry.dispose(); columns.material.dispose(); }
-  if (goalBeacon){ scene.remove(goalBeacon); }
+  if (goalBeacon) scene.remove(goalBeacon);
+  if (ropeGroup){ scene.remove(ropeGroup); ropeGroup.traverse(o => { if (o.geometry) o.geometry.dispose(); }); }
 
   const noise = seedNoise(id);
   heights = new Float32Array(GRID*GRID);
   let count = 0;
   for (let r=0;r<GRID;r++) for (let c=0;c<GRID;c++){
     const i = idx(r,c);
-    if (bits[i]){ heights[i] = 1.1 + noise(c*.35, r*.35)*1.0; count++; } // gentle, always jumpable
+    if (bits[i]){ heights[i] = 1.1 + noise(c*.35, r*.35)*1.0; count++; }
     else heights[i] = NaN;
   }
+  if (!count){ // fully empty mask — bail to demo
+    bits = DEMO.slice(); return buildLevel(id);
+  }
 
-  // spawn: on-pixel nearest bottom-center; goal: on-pixel nearest top-center
   const pick = (fromRow, dir) => {
     for (let r=fromRow; r>=0 && r<GRID; r+=dir){
       let best=null, bd=1e9;
@@ -179,10 +319,13 @@ function buildLevel(id){
   spawn = pick(GRID-1,-1);
   goal  = pick(0, 1);
 
-  // instanced columns
+  // connect islands with tightropes
+  const ropes = buildRopes();
+
+  // white columns
   const geo = new THREE.BoxGeometry(CELL*.96, 1, CELL*.96);
-  geo.translate(0,-.5,0); // top at y=0 local
-  const mat = new THREE.MeshLambertMaterial({color: INK});
+  geo.translate(0,-.5,0);
+  const mat = new THREE.MeshLambertMaterial({color: WHITE});
   columns = new THREE.InstancedMesh(geo, mat, count);
   const m = new THREE.Matrix4();
   const colr = new THREE.Color();
@@ -190,12 +333,11 @@ function buildLevel(id){
   for (let r=0;r<GRID;r++) for (let c=0;c<GRID;c++){
     const i=idx(r,c); if (!bits[i]) continue;
     const h = heights[i];
-    m.makeScale(1, h+6, 1);           // extend columns downward
+    m.makeScale(1, h+6, 1);
     m.setPosition(worldX(c), h, worldZ(r));
     columns.setMatrixAt(k, m);
-    // subtle tonal variation so the surface reads in monochrome
-    const t = .92 + ((r*7+c*13)%9)*.012;
-    colr.setHex(INK).multiplyScalar(t);
+    const t = .9 + ((r*7+c*13)%9)*.013;   // subtle tonal shimmer
+    colr.setHex(WHITE).multiplyScalar(t);
     columns.setColorAt(k, colr);
     k++;
   }
@@ -203,46 +345,520 @@ function buildLevel(id){
   if (columns.instanceColor) columns.instanceColor.needsUpdate = true;
   scene.add(columns);
 
-  // goal beacon: white pillar of light
+  // neon rim strips: mark every platform edge that borders the void
+  if (edgeMesh){ scene.remove(edgeMesh); edgeMesh.geometry.dispose(); }
+  const edges = [];   // {x, z, h, horizontal}
+  for (let r=0;r<GRID;r++) for (let c=0;c<GRID;c++){
+    if (!bits[idx(r,c)]) continue;
+    const h = heights[idx(r,c)];
+    if (!inGrid(r,c-1) || !bits[idx(r,c-1)]) edges.push({x:worldX(c)-.48, z:worldZ(r),     h, horiz:false});
+    if (!inGrid(r,c+1) || !bits[idx(r,c+1)]) edges.push({x:worldX(c)+.48, z:worldZ(r),     h, horiz:false});
+    if (!inGrid(r-1,c) || !bits[idx(r-1,c)]) edges.push({x:worldX(c),     z:worldZ(r)-.48, h, horiz:true});
+    if (!inGrid(r+1,c) || !bits[idx(r+1,c)]) edges.push({x:worldX(c),     z:worldZ(r)+.48, h, horiz:true});
+  }
+  const eGeo = new THREE.BoxGeometry(1, .07, 1);
+  edgeMesh = new THREE.InstancedMesh(eGeo, neonMat, edges.length);
+  const em = new THREE.Matrix4();
+  edges.forEach((e, i) => {
+    em.makeScale(e.horiz ? .98 : .08, 1, e.horiz ? .08 : .98);
+    em.setPosition(e.x, e.h + .04, e.z);
+    edgeMesh.setMatrixAt(i, em);
+  });
+  edgeMesh.instanceMatrix.needsUpdate = true;
+  scene.add(edgeMesh);
+
+  // tightrope meshes: thin beam + posts
+  ropeGroup = new THREE.Group();
+  const ropeMat = new THREE.MeshLambertMaterial({color: WHITE});
+  const postGeo = new THREE.CylinderGeometry(.05,.05,.7,6);
+  for (const {ar,ac,br,bc} of ropes){
+    const ax = worldX(ac), az = worldZ(ar), ah = heights[idx(ar,ac)];
+    const bx = worldX(bc), bz = worldZ(br), bh = heights[idx(br,bc)];
+    const dx = bx-ax, dz = bz-az, dh = bh-ah;
+    const len = Math.hypot(dx, dz, dh);
+    const beam = new THREE.Mesh(new THREE.BoxGeometry(.22, .1, len), ropeMat);
+    beam.position.set((ax+bx)/2, (ah+bh)/2 - .05, (az+bz)/2);
+    beam.lookAt(bx, bh - .05, bz);
+    ropeGroup.add(beam);
+    for (const [px,pz,ph] of [[ax,az,ah],[bx,bz,bh]]){
+      const post = new THREE.Mesh(postGeo, ropeMat);
+      post.position.set(px, ph + .35, pz);
+      ropeGroup.add(post);
+    }
+  }
+  scene.add(ropeGroup);
+
+  // goal beacon — accent orange so it reads against white
   const bg = new THREE.Group();
+  const gh = heights[idx(goal.r, goal.c)];
   const pillar = new THREE.Mesh(
     new THREE.CylinderGeometry(.16,.16,14,10),
-    new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:.75})
+    new THREE.MeshBasicMaterial({color:ACCENT, transparent:true, opacity:.75})
   );
-  pillar.position.y = hAt(goal.r,goal.c) + 7;
+  pillar.position.y = gh + 7;
   const pad = new THREE.Mesh(
     new THREE.BoxGeometry(CELL*.98,.14,CELL*.98),
-    new THREE.MeshBasicMaterial({color:0xffffff})
+    new THREE.MeshBasicMaterial({color:ACCENT})
   );
-  pad.position.y = hAt(goal.r,goal.c) + .08;
+  pad.position.y = gh + .08;
   bg.add(pillar, pad);
   bg.position.set(worldX(goal.c), 0, worldZ(goal.r));
   goalBeacon = bg;
   scene.add(bg);
 }
 
-/* ---------------- player ---------------- */
+/* ---------------- player character ---------------- */
+// A little voxel Normie-kin: white pixel-face head, orange body, swinging limbs.
 const player = new THREE.Group();
-const bodyMesh = new THREE.Mesh(
-  new THREE.BoxGeometry(.62,.62,.62),
-  new THREE.MeshLambertMaterial({color: ACCENT})
-);
-bodyMesh.position.y = .31;
-// tiny "eyes" so it reads as a creature among the faces
-const eyeGeo = new THREE.BoxGeometry(.1,.14,.05);
-const eyeMat = new THREE.MeshBasicMaterial({color:0xffffff});
-const e1 = new THREE.Mesh(eyeGeo, eyeMat); e1.position.set(-.14,.4,.32);
-const e2 = new THREE.Mesh(eyeGeo, eyeMat); e2.position.set(.14,.4,.32);
-player.add(bodyMesh, e1, e2);
+const rig = new THREE.Group();          // animated root (bobs/squashes)
+player.add(rig);
+
+const whiteMat = new THREE.MeshLambertMaterial({color: WHITE});
+const inkMat   = new THREE.MeshLambertMaterial({color: 0x1c1d1e});
+const bodyMat  = new THREE.MeshLambertMaterial({color: ACCENT});
+
+// head: orange cube with dark pixel eyes + mouth
+const head = new THREE.Group();
+const skull = new THREE.Mesh(new THREE.BoxGeometry(.5,.5,.5), bodyMat);
+head.add(skull);
+const px = (w,h,x,y) => {                 // tiny dark pixel on the face
+  const p = new THREE.Mesh(new THREE.BoxGeometry(w,h,.04), inkMat);
+  p.position.set(x,y,.26); head.add(p);
+};
+px(.1,.12,-.12,.07);  px(.1,.12,.12,.07);   // eyes
+px(.22,.07, 0,-.13);                         // mouth
+head.position.y = 1.0;
+
+// torso
+const torso = new THREE.Mesh(new THREE.BoxGeometry(.44,.5,.28), bodyMat);
+torso.position.y = .62;
+
+// limbs pivot at their top so rotation swings them
+const limb = (w,h,d,mat) => {
+  const g = new THREE.Group();
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), mat);
+  m.position.y = -h/2;
+  g.add(m);
+  return g;
+};
+const armL = limb(.12,.42,.12, bodyMat); armL.position.set(-.28,.86,0);
+const armR = limb(.12,.42,.12, bodyMat); armR.position.set( .28,.86,0);
+const legL = limb(.15,.38,.15, bodyMat);  legL.position.set(-.12,.38,0);
+const legR = limb(.15,.38,.15, bodyMat);  legR.position.set( .12,.38,0);
+
+rig.add(head, torso, armL, armR, legL, legR);
+player.scale.set(1.45, 1.45, 1.45);        // readable at follow-cam distance
 scene.add(player);
 
-const P = { x:0, z:0, y:0, vy:0, grounded:false, coyote:0, lastSafe:{r:0,c:0}, facing:0 };
+// blob shadow so the character grounds visually against the white pixels
+const shadow = new THREE.Mesh(
+  new THREE.CircleGeometry(.42, 20),
+  new THREE.MeshBasicMaterial({color:0x000000, transparent:true, opacity:.35, depthWrite:false})
+);
+shadow.rotation.x = -Math.PI/2;
+scene.add(shadow);
+
+let walkPhase = 0, airT = 0, landT = 0;
+function animateCharacter(dt, moving){
+  if (P.grounded){
+    if (airT > .12) landT = .16;      // just landed from a real jump
+    airT = 0;
+    landT = Math.max(0, landT - dt);
+    if (moving){
+      walkPhase += dt * 11;
+      const s = Math.sin(walkPhase);
+      legL.rotation.x =  s * .7;
+      legR.rotation.x = -s * .7;
+      armL.rotation.x = -s * .6;
+      armR.rotation.x =  s * .6;
+      rig.position.y = Math.abs(Math.cos(walkPhase)) * .05;   // step bob
+    } else {
+      const t = performance.now() * .002;
+      legL.rotation.x = legR.rotation.x = 0;
+      armL.rotation.x = armR.rotation.x = Math.sin(t) * .06;  // idle breathe
+      rig.position.y = Math.sin(t*2) * .015;
+    }
+    if (landT > 0) rig.scale.set(1.12, .85, 1.12);   // landing squash
+    else rig.scale.set(1,1,1);
+  } else {
+    airT += dt;
+    // jump pose: arms up, legs tucked, slight stretch
+    armL.rotation.x = armR.rotation.x = -2.4;
+    legL.rotation.x = -.5; legR.rotation.x = .35;
+    rig.position.y = 0;
+    rig.scale.set(.94, 1.1, .94);
+  }
+}
+
+const P = { x:0, z:0, y:0, vy:0, kx:0, kz:0, grounded:false, coyote:0, lastSafe:{r:0,c:0}, facing:0 };
 const SPEED = 4.6, GRAV = -22, JUMPV = 8.6;
 
 function respawn(at){
   P.x = worldX(at.c); P.z = worldZ(at.r);
-  P.y = hAt(at.r, at.c); P.vy = 0; P.grounded = true;
+  P.y = hAt(at.r, at.c); P.vy = 0; P.kx = 0; P.kz = 0; P.grounded = true;
   P.lastSafe = {...at};
+}
+
+/* ---------------- enemies (level 10+) ----------------
+   17 types, one unlocked per level. All of them PUSH.
+   L10 PACER    patrols a line              L11 SPINNER  orbiting neon arm
+   L12 CHASER   seeks the player           L13 BUMPER   lunging dome
+   L14 HOPPER   leaps pixel to pixel       L15 SLIDER   dashes when aligned
+   L16 TWINS    double orbit sweep         L17 SNAKE    4-segment wall that wanders
+   L18 SNIPER   turret, fires neon shots   L19 SWEEPER  long rotating beam
+   L20 STALKER  teleports beside you       L21 MAGNET   drags you toward it
+   L22 QUAKER   expanding shockwave rings  L23 GHOST    flies over gaps, never stops
+   L24 BOMBER   heavy hops, blast on land  L25 WARDEN   circles the goal beacon
+   L26 REAPER   chaser that keeps accelerating
+   Enemy count scales with open ground, speed with level. */
+let enemies = [], shots = [];
+const cellDist = (a,b) => Math.hypot(a.r-b.r, a.c-b.c);
+const surfaceAt = (x,z) => hAt(Math.round(z/CELL + GRID/2 - .5), Math.round(x/CELL + GRID/2 - .5));
+const walkableAt = (x,z) => {
+  const c = Math.round(x/CELL + GRID/2 - .5), r = Math.round(z/CELL + GRID/2 - .5);
+  return inGrid(r,c) && bits[idx(r,c)] === 1;
+};
+// chasing enemies won't crowd the goal — only the WARDEN may guard it
+const inSanctum = (x,z) => Math.hypot(x-worldX(goal.c), z-worldZ(goal.r)) < 3.5;
+const ghostMat = new THREE.MeshLambertMaterial({color:0x1c1d1e, transparent:true, opacity:.6});
+const shotGeo = new THREE.BoxGeometry(.22,.22,.22);
+
+function enemyMesh(type){
+  const g = new THREE.Group();
+  const box = (w,h,d,mat,y,x=0,z=0) => { const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat); m.position.set(x,y,z); g.add(m); return m; };
+  switch(type){
+    case 0:  box(.6,.6,.6,inkMat,.3); box(.64,.1,.1,neonMat,.42); break;                    // PACER
+    case 1:  box(.26,.9,.26,inkMat,.45); g.userData.orb=box(.45,.45,.45,neonMat,.5); break; // SPINNER
+    case 2: { const c=new THREE.Mesh(new THREE.ConeGeometry(.38,.85,6),inkMat); c.position.y=.42; g.add(c);
+              box(.15,.15,.15,neonMat,.92); break; }                                        // CHASER
+    case 3: { const d=new THREE.Mesh(new THREE.SphereGeometry(.55,12,8,0,Math.PI*2,0,Math.PI/2),inkMat); g.add(d);
+              const r=new THREE.Mesh(new THREE.TorusGeometry(.6,.05,8,20),neonMat); r.rotation.x=Math.PI/2; r.position.y=.07; g.add(r); break; } // BUMPER
+    case 4:  box(.45,.45,.45,inkMat,.55); box(.52,.08,.52,neonMat,.3); break;               // HOPPER
+    case 5:  box(1.0,.3,.6,inkMat,.15); box(1.04,.08,.12,neonMat,.34); break;               // SLIDER
+    case 6:  box(.24,.8,.24,inkMat,.4);
+             g.userData.orb =box(.4,.4,.4,neonMat,.5);
+             g.userData.orb2=box(.4,.4,.4,neonMat,.5); break;                               // TWINS
+    case 7:  box(.55,.55,.55,inkMat,.3); box(.58,.1,.1,neonMat,.5); break;                  // SNAKE head (segments added at spawn)
+    case 8:  box(.6,.5,.6,inkMat,.25); g.userData.barrel=box(.16,.16,.7,neonMat,.5); break; // SNIPER
+    case 9:  box(.3,.7,.3,inkMat,.35);
+             { const b=box(3.4,.12,.14,neonMat,.5); b.position.x=1.7; g.userData.beam=b; } break; // SWEEPER (beam pivoted at group origin)
+    case 10:{ const c=new THREE.Mesh(new THREE.ConeGeometry(.35,.9,4),inkMat); c.rotation.z=Math.PI; c.position.y=.55; g.add(c);
+              const r=new THREE.Mesh(new THREE.TorusGeometry(.9,.05,6,24),neonMat); r.rotation.x=Math.PI/2; r.position.y=.05; g.userData.ring=r; g.add(r); break; } // STALKER
+    case 11:{ const r=new THREE.Mesh(new THREE.TorusGeometry(.5,.12,8,20),inkMat); r.rotation.x=Math.PI/2; r.position.y=.4; g.add(r);
+              box(.3,.3,.3,neonMat,.4); break; }                                            // MAGNET
+    case 12:{ const c=new THREE.Mesh(new THREE.CylinderGeometry(.45,.55,.5,10),inkMat); c.position.y=.25; g.add(c);
+              const r=new THREE.Mesh(new THREE.TorusGeometry(1,.06,6,28),neonMat); r.rotation.x=Math.PI/2; r.position.y=.08; g.userData.ring=r; g.add(r); break; } // QUAKER
+    case 13:{ const s=new THREE.Mesh(new THREE.SphereGeometry(.42,10,8),ghostMat); s.position.y=.6; g.add(s);
+              box(.5,.08,.08,neonMat,.66); break; }                                         // GHOST
+    case 14: box(.7,.7,.7,inkMat,.75); box(.76,.1,.76,neonMat,.42); break;                  // BOMBER
+    case 15:{ const c=new THREE.Mesh(new THREE.ConeGeometry(.4,1.0,5),inkMat); c.position.y=.5; g.add(c);
+              box(.2,.2,.2,neonMat,1.1); break; }                                           // WARDEN
+    default:{ const c=new THREE.Mesh(new THREE.ConeGeometry(.42,1.1,3),inkMat); c.position.y=.55; g.add(c);
+              box(.5,.12,.12,neonMat,.9); break; }                                          // REAPER
+  }
+  return g;
+}
+
+function spawnEnemies(level){
+  for (const e of enemies){ scene.remove(e.root); if (e.segs) e.segs.forEach(s=>scene.remove(s)); }
+  for (const s of shots) scene.remove(s.mesh);
+  enemies = []; shots = [];
+  if (level < 10) return;
+  let sd = level * 2654435761 % 2**32;
+  const rand = () => { sd = (sd * 1664525 + 1013904223) % 2**32; return sd / 2**32; };
+  const nTypes = Math.min(17, level - 9);
+  let walkable = 0;
+  for (let i=0;i<GRID*GRID;i++) if (bits[i]) walkable++;
+  // density scales with open ground: sparse faces stay sparse, big fields get crowded
+  const count = Math.min(24, Math.max(2 + Math.floor((level-10)/2), Math.floor(walkable/55)));
+  const spd = 1 + Math.min(2, (level-10)*.05);
+  const swarm = nTypes > 1 && rand() < .22;
+  let swarmType = Math.floor(rand()*nTypes);
+  if (swarmType === 15) swarmType = 2;                // never a WARDEN swarm — goal would be walled off
+  let wardenSpawned = false;
+  const typeFor = i => {
+    let t;
+    if (level <= 26 && i === 0) t = nTypes-1;         // debut levels showcase the new type
+    else if (swarm) t = swarmType;
+    else t = Math.floor(rand()*nTypes);
+    if (t === 15){                                    // only one goal-guard per level
+      if (wardenSpawned) t = Math.floor(rand()*15);
+      else wardenSpawned = true;
+    }
+    return t;
+  };
+  const cand = [];
+  for (let r=0;r<GRID;r++) for (let c=0;c<GRID;c++){
+    if (!bits[idx(r,c)]) continue;
+    if (cellDist({r,c},spawn) < 10 || cellDist({r,c},goal) < 7) continue;  // clear zones around origin + goal
+    cand.push({r,c});
+  }
+  const placed = [];
+  const pickCell = () => {                            // keep enemies spread out, no clumps
+    for (let tries=0; tries<10 && cand.length; tries++){
+      const k = Math.floor(rand()*cand.length);
+      const cell = cand[k];
+      if (placed.every(p => cellDist(p,cell) >= 2.5)){ cand.splice(k,1); placed.push(cell); return cell; }
+    }
+    return cand.length ? cand.splice(Math.floor(rand()*cand.length),1)[0] : null;
+  };
+  for (let i=0;i<count && cand.length;i++){
+    const type = typeFor(i);
+    const cell = type===15 ? goal : pickCell();       // WARDEN guards the goal
+    if (!cell) break;
+    const root = enemyMesh(type);
+    scene.add(root);
+    const e = { type, root, spd, x:worldX(cell.c), z:worldZ(cell.r),
+                dirX:1, dirZ:0, ang:rand()*6.28, t:rand()*2, cool:0, hop:null, ringR:0, born:performance.now() };
+    if (rand()<.5){ e.dirX=0; e.dirZ=rand()<.5?1:-1; } else if (rand()<.5) e.dirX=-1;
+    if (type===7){                                    // SNAKE: build trailing segments
+      e.trail = []; e.segs = [];
+      for (let k=0;k<3;k++){
+        const sg = new THREE.Mesh(new THREE.BoxGeometry(.5,.5,.5), inkMat);
+        scene.add(sg); e.segs.push(sg);
+      }
+    }
+    enemies.push(e);
+  }
+}
+
+function pushPlayer(ex,ez,strength){
+  const dx = P.x-ex, dz = P.z-ez, d = Math.hypot(dx,dz) || 1;
+  P.kx = dx/d * strength; P.kz = dz/d * strength;
+  P.vy = Math.max(P.vy, 3.4); P.grounded = false;
+}
+
+function hazard(e, hx, hz, hr, hs, needGround){
+  if (e.cool > 0) return;
+  if (needGround && !P.grounded) return;
+  const eh = surfaceAt(hx,hz);
+  if (Math.hypot(P.x-hx, P.z-hz) < hr && Math.abs(P.y-(isNaN(eh)?P.y:eh)) < 1.5){
+    pushPlayer(hx,hz,hs);
+    e.cool = .6;
+  }
+}
+
+function fireShot(x,z,tx,tz,v){
+  const dx=tx-x, dz=tz-z, d=Math.hypot(dx,dz)||1;
+  const m = new THREE.Mesh(shotGeo, neonMat);
+  scene.add(m);
+  shots.push({mesh:m, x, z, vx:dx/d*v, vz:dz/d*v, life:3});
+}
+
+function updateEnemies(dt){
+  const now = performance.now();
+  for (const e of enemies){
+    e.cool = Math.max(0, e.cool - dt);
+    const groundY = () => surfaceAt(e.x,e.z)||0;
+    switch(e.type){
+      case 0: { // PACER
+        const v = 2.4*e.spd;
+        const nx2 = e.x + e.dirX*v*dt, nz2 = e.z + e.dirZ*v*dt;
+        if (walkableAt(nx2 + e.dirX*.4, nz2 + e.dirZ*.4)){ e.x=nx2; e.z=nz2; }
+        else { e.dirX*=-1; e.dirZ*=-1; }
+        e.root.position.set(e.x, groundY(), e.z);
+        hazard(e, e.x, e.z, .85, 7.5); break; }
+      case 1: { // SPINNER
+        e.ang += dt*2.6*e.spd;
+        e.root.position.set(e.x, groundY(), e.z);
+        e.root.userData.orb.position.set(Math.cos(e.ang)*1.5, .5, Math.sin(e.ang)*1.5);
+        hazard(e, e.x+Math.cos(e.ang)*1.5, e.z+Math.sin(e.ang)*1.5, .7, 8.5); break; }
+      case 2: { // CHASER
+        const dx=P.x-e.x, dz=P.z-e.z, d=Math.hypot(dx,dz)||1;
+        if (d < 12){
+          const v=1.9*e.spd;
+          const nx2=e.x+dx/d*v*dt, nz2=e.z+dz/d*v*dt;
+          if (walkableAt(nx2,e.z) && !inSanctum(nx2,e.z)) e.x=nx2;
+          if (walkableAt(e.x,nz2) && !inSanctum(e.x,nz2)) e.z=nz2;
+        }
+        e.root.position.set(e.x, groundY(), e.z);
+        e.root.rotation.y += dt*3;
+        hazard(e, e.x, e.z, .85, 8); break; }
+      case 3: { // BUMPER — lunges at you when close
+        const dx=P.x-e.x, dz=P.z-e.z, d=Math.hypot(dx,dz);
+        if (d < 3.2 && e.cool<=0 && !e.hop){ e.hop={fx:e.x,fz:e.z,tx:e.x+dx/d*1.6,tz:e.z+dz/d*1.6,p:0,back:false}; }
+        if (e.hop){
+          e.hop.p += dt*4;
+          const p=Math.min(1,e.hop.p);
+          e.x=e.hop.fx+(e.hop.tx-e.hop.fx)*p; e.z=e.hop.fz+(e.hop.tz-e.hop.fz)*p;
+          if (p>=1){ if (!e.hop.back){ e.hop={fx:e.x,fz:e.z,tx:e.hop.fx,tz:e.hop.fz,p:0,back:true}; } else e.hop=null; }
+        }
+        const s = 1 + Math.sin(now*.006)*.12;
+        e.root.scale.set(s,1,s);
+        e.root.position.set(e.x, groundY(), e.z);
+        hazard(e, e.x, e.z, 1.2, 10); break; }
+      case 4: { // HOPPER
+        e.t -= dt;
+        if (!e.hop && e.t<=0){
+          const dirs=[[1,0],[-1,0],[0,1],[0,-1]].filter(([a,b])=>walkableAt(e.x+a,e.z+b));
+          if (dirs.length){ const [a,b]=dirs[Math.floor(Math.random()*dirs.length)]; e.hop={fx:e.x,fz:e.z,tx:e.x+a,tz:e.z+b,p:0}; }
+          e.t=.8/e.spd;
+        }
+        if (e.hop){
+          e.hop.p += dt*2.8; const p=Math.min(1,e.hop.p);
+          e.x=e.hop.fx+(e.hop.tx-e.hop.fx)*p; e.z=e.hop.fz+(e.hop.tz-e.hop.fz)*p;
+          e.root.position.set(e.x, groundY()+Math.sin(p*Math.PI)*1.1, e.z);
+          if (p>=1) e.hop=null;
+        } else e.root.position.set(e.x, groundY(), e.z);
+        hazard(e, e.x, e.z, .85, 8); break; }
+      case 5: { // SLIDER — dashes when you share its row or column
+        if (!e.dash){
+          const alignedX = Math.abs(P.z-e.z) < .6, alignedZ = Math.abs(P.x-e.x) < .6;
+          if ((alignedX || alignedZ) && e.cool<=0){
+            const dx = alignedX ? Math.sign(P.x-e.x) : 0, dz = alignedX ? 0 : Math.sign(P.z-e.z);
+            e.dash = {dx,dz,t:1.1};
+          }
+        } else {
+          const v = 7*e.spd;
+          const nx2=e.x+e.dash.dx*v*dt, nz2=e.z+e.dash.dz*v*dt;
+          if (walkableAt(nx2+e.dash.dx*.5, nz2+e.dash.dz*.5)){ e.x=nx2; e.z=nz2; } else e.dash=null;
+          if (e.dash && (e.dash.t-=dt)<=0) e.dash=null;
+        }
+        e.root.position.set(e.x, groundY(), e.z);
+        e.root.rotation.y = e.dash ? Math.atan2(e.dash.dx,e.dash.dz) : e.root.rotation.y;
+        hazard(e, e.x, e.z, .95, 9); break; }
+      case 6: { // TWINS — counter-rotating double orbit
+        e.ang += dt*2.2*e.spd;
+        e.root.position.set(e.x, groundY(), e.z);
+        e.root.userData.orb.position.set(Math.cos(e.ang)*1.9, .5, Math.sin(e.ang)*1.9);
+        e.root.userData.orb2.position.set(-Math.cos(e.ang)*1.9, .5, -Math.sin(e.ang)*1.9);
+        hazard(e, e.x+Math.cos(e.ang)*1.9, e.z+Math.sin(e.ang)*1.9, .7, 8.5);
+        hazard(e, e.x-Math.cos(e.ang)*1.9, e.z-Math.sin(e.ang)*1.9, .7, 8.5); break; }
+      case 7: { // SNAKE — wandering head, trailing body wall
+        e.t -= dt;
+        if (e.t <= 0){
+          const dirs=[[1,0],[-1,0],[0,1],[0,-1]].filter(([a,b])=>walkableAt(e.x+a*1.2, e.z+b*1.2));
+          if (dirs.length){ const [a,b]=dirs[Math.floor(Math.random()*dirs.length)]; e.dirX=a; e.dirZ=b; }
+          e.t = 1.2 + Math.random();
+        }
+        const v = 2.6*e.spd;
+        const nx2=e.x+e.dirX*v*dt, nz2=e.z+e.dirZ*v*dt;
+        if (walkableAt(nx2+e.dirX*.4, nz2+e.dirZ*.4)){ e.x=nx2; e.z=nz2; } else e.t=0;
+        e.trail.unshift({x:e.x,z:e.z});
+        if (e.trail.length > 46) e.trail.pop();
+        e.root.position.set(e.x, groundY(), e.z);
+        hazard(e, e.x, e.z, .8, 8);
+        e.segs.forEach((sg,k)=>{
+          const p = e.trail[Math.min((k+1)*14, e.trail.length-1)] || {x:e.x,z:e.z};
+          sg.position.set(p.x, (surfaceAt(p.x,p.z)||0)+.25, p.z);
+          hazard(e, p.x, p.z, .75, 8);
+        });
+        break; }
+      case 8: { // SNIPER — turret firing neon shots
+        e.t -= dt;
+        const dx=P.x-e.x, dz=P.z-e.z, d=Math.hypot(dx,dz);
+        e.root.userData.barrel.rotation.y = 0;
+        e.root.rotation.y = Math.atan2(dx,dz);
+        if (e.t<=0 && d < 14){ fireShot(e.x,e.z,P.x,P.z, 5.5*e.spd); e.t = 2.2/e.spd; }
+        e.root.position.set(e.x, groundY(), e.z);
+        hazard(e, e.x, e.z, .8, 7.5); break; }
+      case 9: { // SWEEPER — rotating 3.4-unit beam, point-to-segment collision
+        e.ang += dt*1.6*e.spd;
+        e.root.position.set(e.x, groundY(), e.z);
+        e.root.rotation.y = -e.ang;
+        const bx=Math.cos(e.ang), bz=Math.sin(e.ang);
+        const px=P.x-e.x, pz=P.z-e.z;
+        const t2 = Math.max(0, Math.min(3.4, px*bx+pz*bz));
+        const cx=e.x+bx*t2, cz=e.z+bz*t2;
+        hazard(e, cx, cz, .55, 9); break; }
+      case 10: { // STALKER — telegraphed teleport beside the player
+        e.t -= dt;
+        const ring = e.root.userData.ring;
+        if (e.t <= .7 && e.t > 0){ ring.scale.setScalar(1 + (0.7-e.t)*1.6); }   // warning grows
+        if (e.t <= 0){
+          for (let tries=0; tries<8; tries++){
+            const a = Math.random()*6.28, rr = 1.8+Math.random()*1.4;
+            const tx=P.x+Math.cos(a)*rr, tz=P.z+Math.sin(a)*rr;
+            if (walkableAt(tx,tz) && !inSanctum(tx,tz)){ e.x=tx; e.z=tz; break; }
+          }
+          ring.scale.setScalar(1);
+          e.cool = 0;                                   // arrival slam is live immediately
+          hazard(e, e.x, e.z, 1.5, 10);
+          e.t = 2.6/e.spd;
+        }
+        e.root.position.set(e.x, groundY(), e.z);
+        hazard(e, e.x, e.z, .8, 8.5); break; }
+      case 11: { // MAGNET — continuous pull toward itself
+        e.root.position.set(e.x, groundY(), e.z);
+        e.root.rotation.y += dt*2;
+        const dx=e.x-P.x, dz=e.z-P.z, d=Math.hypot(dx,dz);
+        if (d < 4.5 && d > .1){
+          P.kx += dx/d * 6.5*e.spd*dt * (1 - d/4.5) * 5;
+          P.kz += dz/d * 6.5*e.spd*dt * (1 - d/4.5) * 5;
+        }
+        hazard(e, e.x, e.z, .9, 9); break; }
+      case 12: { // QUAKER — expanding shockwave rings, jump to dodge
+        e.t -= dt;
+        const ring = e.root.userData.ring;
+        if (e.t <= 0){ e.ringR = .2; e.t = 2.6/e.spd; }
+        if (e.ringR > 0){
+          e.ringR += dt*4;
+          ring.scale.setScalar(e.ringR);
+          if (e.ringR > 4){ e.ringR = 0; ring.scale.setScalar(1); }
+          else {
+            const d = Math.hypot(P.x-e.x, P.z-e.z);
+            if (Math.abs(d-e.ringR) < .5) hazard(e, e.x, e.z, d+1, 8.5, true); // grounded only — jump it
+          }
+        }
+        e.root.position.set(e.x, groundY(), e.z);
+        break; }
+      case 13: { // GHOST — drifts straight at you, floats over the void
+        const dx=P.x-e.x, dz=P.z-e.z, d=Math.hypot(dx,dz)||1;
+        const v = 1.15*e.spd;
+        const gx2 = e.x + dx/d*v*dt, gz2 = e.z + dz/d*v*dt;
+        if (!inSanctum(gx2,gz2)){ e.x = gx2; e.z = gz2; }
+        const s2 = surfaceAt(e.x,e.z);
+        e.gy = isNaN(s2) ? (e.gy ?? 1.5) : s2;
+        e.root.position.set(e.x, e.gy + Math.sin(now*.003)*.15, e.z);
+        hazard(e, e.x, e.z, .85, 8.5); break; }
+      case 14: { // BOMBER — heavy hops with landing blast
+        e.t -= dt;
+        if (!e.hop && e.t<=0){
+          const dx=P.x-e.x, dz=P.z-e.z, d=Math.hypot(dx,dz)||1;
+          const hopD = Math.min(2, d);
+          const tx=e.x+dx/d*hopD, tz=e.z+dz/d*hopD;
+          if (walkableAt(tx,tz) && !inSanctum(tx,tz)) e.hop={fx:e.x,fz:e.z,tx,tz,p:0};
+          e.t = 1.6/e.spd;
+        }
+        if (e.hop){
+          e.hop.p += dt*1.8; const p=Math.min(1,e.hop.p);
+          e.x=e.hop.fx+(e.hop.tx-e.hop.fx)*p; e.z=e.hop.fz+(e.hop.tz-e.hop.fz)*p;
+          e.root.position.set(e.x, groundY()+Math.sin(p*Math.PI)*1.6, e.z);
+          if (p>=1){ e.hop=null; e.cool=0; hazard(e, e.x, e.z, 1.8, 11, true); } // landing blast, grounded only
+        } else e.root.position.set(e.x, groundY(), e.z);
+        hazard(e, e.x, e.z, .9, 9); break; }
+      case 15: { // WARDEN — fast orbit around the goal beacon
+        e.ang += dt*1.9*e.spd;
+        const gx = worldX(goal.c), gz = worldZ(goal.r);
+        e.x = gx + Math.cos(e.ang)*3; e.z = gz + Math.sin(e.ang)*3;
+        const s3 = surfaceAt(e.x,e.z);
+        e.root.position.set(e.x, isNaN(s3)? (surfaceAt(gx,gz)||1) : s3, e.z);
+        hazard(e, e.x, e.z, 1.0, 10); break; }
+      default: { // REAPER — relentless, accelerates the longer the level runs
+        const age = (now - e.born)/1000;
+        const v = Math.min(4.2, (1.4 + age*.045) * e.spd);
+        const dx=P.x-e.x, dz=P.z-e.z, d=Math.hypot(dx,dz)||1;
+        const nx2=e.x+dx/d*v*dt, nz2=e.z+dz/d*v*dt;
+        if (walkableAt(nx2,e.z) && !inSanctum(nx2,e.z)) e.x=nx2;
+        if (walkableAt(e.x,nz2) && !inSanctum(e.x,nz2)) e.z=nz2;
+        e.root.position.set(e.x, groundY(), e.z);
+        e.root.rotation.y += dt*6;
+        hazard(e, e.x, e.z, .9, 9.5); break; }
+    }
+  }
+  // projectiles
+  for (let i=shots.length-1;i>=0;i--){
+    const s = shots[i];
+    s.x += s.vx*dt; s.z += s.vz*dt; s.life -= dt;
+    const sy = surfaceAt(s.x,s.z);
+    s.mesh.position.set(s.x, (isNaN(sy)?1:sy)+.5, s.z);
+    const d = Math.hypot(P.x-s.x, P.z-s.z);
+    if (d < .7 && Math.abs(P.y+.5-s.mesh.position.y) < 1.2){
+      pushPlayer(s.x, s.z, 8);
+      s.life = 0;
+    }
+    if (s.life <= 0){ scene.remove(s.mesh); shots.splice(i,1); }
+  }
 }
 
 /* ---------------- input ---------------- */
@@ -277,9 +893,47 @@ let jumpQueued = false;
 document.getElementById('jumpBtn').addEventListener('touchstart', e => { e.preventDefault(); jumpQueued = true; }, {passive:false});
 if ('ontouchstart' in window) document.body.classList.add('touch');
 
+// ---- camera orbit: drag anywhere on the canvas ----
+let camYaw = 0;
+let rotTouch = null, rotLastX = 0;
+canvas.addEventListener('touchstart', e => {
+  if (rotTouch === null){
+    const t = e.changedTouches[0];
+    rotTouch = t.identifier; rotLastX = t.clientX;
+  }
+}, {passive:true});
+addEventListener('touchmove', e => {
+  for (const t of e.changedTouches){
+    if (t.identifier !== rotTouch) continue;
+    camYaw -= (t.clientX - rotLastX) * .008;
+    rotLastX = t.clientX;
+  }
+}, {passive:true});
+addEventListener('touchend', e => {
+  for (const t of e.changedTouches) if (t.identifier === rotTouch) rotTouch = null;
+});
+let mouseDrag = false;
+canvas.addEventListener('mousedown', e => { mouseDrag = true; rotLastX = e.clientX; });
+addEventListener('mousemove', e => {
+  if (!mouseDrag) return;
+  camYaw -= (e.clientX - rotLastX) * .006;
+  rotLastX = e.clientX;
+});
+addEventListener('mouseup', () => mouseDrag = false);
+
 /* ---------------- game state / stats ---------------- */
 let running = false, t0 = 0, elapsed = 0, falls = 0, won = false;
-const sTime = document.getElementById('sTime'), sFalls = document.getElementById('sFalls'), sId = document.getElementById('sId');
+let totalTime = 0, totalFalls = 0, totalScore = 0, autoNextT = null;
+let lastPts = 0, lastTSec = 0, lastFallsWon = 0;   // for fair replays
+const sTime = document.getElementById('sTime'), sFalls = document.getElementById('sFalls'),
+      sId = document.getElementById('sId'), sLvl = document.getElementById('sLvl'),
+      sScore = document.getElementById('sScore');
+
+// score: 1000 base + time bonus (fade over 60s) − 100 per fall, floor 100
+function levelScore(tSec, nFalls){
+  const timeBonus = Math.max(0, Math.round(500 * (1 - tSec/60)));
+  return Math.max(100, 1000 + timeBonus - nFalls*100);
+}
 const toastEl = document.getElementById('toast');
 let toastT = null;
 function toast(msg){
@@ -293,26 +947,23 @@ function drawMap(){
   if (!bits) return;
   const img = mapCtx.createImageData(GRID, GRID);
   for (let i=0;i<GRID*GRID;i++){
-    const on = bits[i];
-    img.data[i*4]   = on ? 0x48 : 0xe3;
-    img.data[i*4+1] = on ? 0x49 : 0xe5;
-    img.data[i*4+2] = on ? 0x4b : 0xe4;
+    const on = bits[i], rope = !isNaN(ropeH[i]);
+    const v = on ? 0xe3 : (rope ? 0x7a : 0x0a);
+    img.data[i*4] = v; img.data[i*4+1] = v; img.data[i*4+2] = v;
     img.data[i*4+3] = 255;
   }
   mapCtx.putImageData(img,0,0);
-  // goal
-  mapCtx.fillStyle = '#ffffff';
+  mapCtx.fillStyle = '#ff4d00';
   mapCtx.fillRect(goal.c-1, goal.r-1, 3, 3);
-  mapCtx.strokeStyle = '#48494b'; mapCtx.lineWidth = .5;
-  mapCtx.strokeRect(goal.c-1.5, goal.r-1.5, 4, 4);
-  // player
   const pc = Math.round((P.x/CELL) + GRID/2 - .5), pr = Math.round((P.z/CELL) + GRID/2 - .5);
   mapCtx.fillStyle = '#ff4d00';
+  mapCtx.strokeStyle = '#0a0a0a'; mapCtx.lineWidth = 1;
   mapCtx.fillRect(pc-1, pr-1, 3, 3);
+  mapCtx.strokeRect(pc-1.5, pr-1.5, 4, 4);
 }
 
 /* ---------------- fetch normie ---------------- */
-const DEMO = (() => { // fallback smiley if API unreachable
+const DEMO = (() => {
   const b = new Uint8Array(GRID*GRID);
   const set=(r,c)=>{ if(inGrid(r,c)) b[idx(r,c)]=1; };
   for(let r=6;r<36;r++)for(let c=6;c<34;c++){const d=Math.hypot(r-21,c-20);if(d<14.5)set(r,c);}
@@ -321,28 +972,60 @@ const DEMO = (() => { // fallback smiley if API unreachable
   return b;
 })();
 
-async function loadNormie(id){
-  toast(`LOADING NORMIE #${id}…`);
-  let str = null;
+function applyMask(){
+  // API 1-bits are the dark pixels of the artwork → those are gaps.
+  // White pixels (0-bits) are the solid, walkable ground.
+  bits = new Uint8Array(GRID*GRID);
+  for (let i=0;i<GRID*GRID;i++) bits[i] = rawBits[i] ? 0 : 1;
+}
+
+// ---- level cache: always keep 3 loaded (current + next two) ----
+const bitCache = new Map();          // id -> Uint8Array | null (null = fetch failed)
+async function fetchBits(id){
+  if (id < 0 || id > 9999) return null;
+  if (bitCache.has(id)) return bitCache.get(id);
+  let out = null;
   try {
     const res = await fetch(`https://api.normies.art/normie/${id}/pixels`);
     const text = await res.text();
-    // accept plain string or any JSON shape containing a 1600-char bitstring
     const match = text.match(/[01]{1600}/);
-    if (match) str = match[0];
+    if (match){
+      out = new Uint8Array(GRID*GRID);
+      for (let i=0;i<1600;i++) out[i] = match[0].charCodeAt(i) === 49 ? 1 : 0;
+    }
   } catch(e){ /* offline / CORS */ }
+  bitCache.set(id, out);
+  return out;
+}
+function prefetch(id){ fetchBits(id+1); fetchBits(id+2); }
 
-  if (str){
-    bits = new Uint8Array(GRID*GRID);
-    for (let i=0;i<1600;i++) bits[i] = str.charCodeAt(i) === 49 ? 1 : 0;
+async function loadNormie(id){
+  id = Math.max(0, Math.min(9999, id|0));
+  toast(`LEVEL ${id+1} — NORMIE #${id}`);
+  const got = await fetchBits(id);
+  if (got){ rawBits = got.slice(); tokenId = id; }
+  else {
+    rawBits = DEMO.map(b => b ? 0 : 1);   // DEMO stores walkable=1; store in raw (dark=1) convention
     tokenId = id;
-    toast(`NORMIE #${id} LOADED`);
-  } else {
-    bits = DEMO.slice(); tokenId = id;
     toast('API UNREACHABLE — DEMO FACE LOADED');
   }
   sId.textContent = '#' + tokenId;
-  buildLevel(id);
+  sLvl.textContent = tokenId + 1;
+  prefetch(id);                       // warm the next two levels
+  rebuild();
+}
+
+function nextLevel(){
+  clearTimeout(autoNextT); autoNextT = null;
+  document.getElementById('win').classList.add('hidden');
+  if (tokenId >= 9999){ toast('FINAL NORMIE CLEARED — RUN COMPLETE'); return; }
+  loadNormie(tokenId + 1); running = true;
+}
+
+function rebuild(){
+  applyMask();
+  buildLevel(tokenId ?? 0);
+  spawnEnemies((tokenId ?? 0) + 1);
   respawn(spawn);
   elapsed = 0; falls = 0; won = false;
   sFalls.textContent = falls;
@@ -353,28 +1036,33 @@ async function loadNormie(id){
 /* ---------------- physics + camera ---------------- */
 const camTarget = new THREE.Vector3();
 function step(dt){
-  // input vector (screen space: up = -z)
   let ix = (keys.KeyD||keys.ArrowRight?1:0) - (keys.KeyA||keys.ArrowLeft?1:0) + stickVec.x;
   let iz = (keys.KeyS||keys.ArrowDown?1:0) - (keys.KeyW||keys.ArrowUp?1:0) + stickVec.y;
   const len = Math.hypot(ix,iz); if (len>1){ ix/=len; iz/=len; }
 
-  const nx = P.x + ix*SPEED*dt;
-  const nz = P.z + iz*SPEED*dt;
+  // rotate input into camera-relative world space (drag rotates the view)
+  const cosY = Math.cos(camYaw), sinY = Math.sin(camYaw);
+  const wx = ix*cosY + iz*sinY;
+  const wz = -ix*sinY + iz*cosY;
 
-  // side collision: block walking into a column wall taller than you can step onto
   const cellOf = (x,z) => ({ c: Math.round(x/CELL + GRID/2 - .5), r: Math.round(z/CELL + GRID/2 - .5) });
   const tryMove = (x,z) => {
     const {r,c} = cellOf(x,z);
     const top = hAt(r,c);
-    if (!isNaN(top) && top > P.y + .45) return false; // wall
+    if (!isNaN(top) && !isRope(r,c) && top > P.y + .45) return false;
     return true;
   };
+  const nx = P.x + (wx*SPEED + P.kx)*dt;
+  const nz = P.z + (wz*SPEED + P.kz)*dt;
   if (tryMove(nx, P.z)) P.x = nx;
   if (tryMove(P.x, nz)) P.z = nz;
+  const kDecay = Math.max(0, 1 - 5*dt);
+  P.kx *= kDecay; P.kz *= kDecay;
 
-  if (len > .05) P.facing = Math.atan2(ix, iz);
+  if (len > .05) P.facing = Math.atan2(wx, wz);
 
-  // vertical
+  updateEnemies(dt);
+
   P.vy += GRAV*dt;
   P.y += P.vy*dt;
 
@@ -382,46 +1070,70 @@ function step(dt){
   const top = hAt(r,c);
   if (!isNaN(top) && P.vy <= 0 && P.y <= top + .02 && P.y > top - .8){
     P.y = top; P.vy = 0; P.grounded = true; P.coyote = .12;
-    P.lastSafe = {r,c};
+    if (!isRope(r,c)) P.lastSafe = {r,c};   // don't respawn onto a rope
   } else {
     P.coyote -= dt;
     P.grounded = false;
   }
 
-  // jump (keyboard or button), with coyote time
   const wantJump = keys.Space || jumpQueued;
   if (wantJump && (P.grounded || P.coyote > 0)){
     P.vy = JUMPV; P.grounded = false; P.coyote = 0;
   }
   jumpQueued = false;
 
-  // fell into the void
   if (P.y < -8){
     falls++; sFalls.textContent = falls;
     respawn(P.lastSafe);
     toast('INTO THE VOID');
   }
 
-  // reach goal
   if (!won && r===goal.r && c===goal.c && P.grounded){
     won = true; running = false;
-    const t = ((performance.now()-t0)/1000).toFixed(1);
+    const tSec = (performance.now()-t0)/1000;
+    totalTime += tSec; totalFalls += falls;
+    const pts = levelScore(tSec, falls);
+    totalScore += pts;
+    lastPts = pts; lastTSec = tSec; lastFallsWon = falls;
+    sScore.textContent = totalScore;
     document.getElementById('winText').innerHTML =
-      `You traversed Normie <b>#${tokenId}</b><br>TIME ${t}s · FALLS ${falls}`;
+      `LEVEL <b>${tokenId+1}</b> · NORMIE <b>#${tokenId}</b><br>` +
+      `TIME ${tSec.toFixed(1)}s · FALLS ${falls}<br>` +
+      `<b>+${pts} PTS</b> · TOTAL ${totalScore}<br><br>` +
+      `NEXT LEVEL IN 3…`;
     document.getElementById('win').classList.remove('hidden');
+    // if a name was ever typed (even without pressing SAVE), adopt it and stop asking
+    const typed = document.getElementById('nameInput').value.trim();
+    if (!playerName && typed) playerName = typed;
+    if (playerName){
+      document.getElementById('saveRow').classList.add('hidden');
+      submitScore(playerName, true);            // silent background update
+    } else {
+      document.getElementById('saveRow').classList.remove('hidden');
+    }
+    clearTimeout(autoNextT);
+    autoNextT = setTimeout(nextLevel, 3000);
   }
 
-  // visuals
   player.position.set(P.x, P.y, P.z);
   player.rotation.y += (P.facing - player.rotation.y)*.2;
-  const squash = P.grounded ? 1 : 1.12;
-  bodyMesh.scale.set(2-squash, squash, 2-squash);
+  animateCharacter(dt, len > .05);
+
+  // project shadow onto the surface below
+  if (!isNaN(top)){
+    shadow.visible = true;
+    shadow.position.set(P.x, top + .03, P.z);
+    const drop = Math.min(Math.max(P.y - top, 0), 4);
+    const sc = 1 - drop * .12;
+    shadow.scale.set(sc, sc, sc);
+    shadow.material.opacity = .35 * sc;
+  } else shadow.visible = false;
 
   if (goalBeacon) goalBeacon.children[0].material.opacity = .55 + Math.sin(performance.now()*.004)*.25;
 
-  camTarget.set(P.x, P.y + 6.4, P.z + 8.2);
+  camTarget.set(P.x + sinY*9.2, P.y + 5.4, P.z + cosY*9.2);
   camera.position.lerp(camTarget, 1 - Math.pow(.001, dt));
-  camera.lookAt(P.x, P.y + .8, P.z);
+  camera.lookAt(P.x, P.y + 1.3, P.z);   // character midpoint = screen center
 }
 
 /* ---------------- main loop ---------------- */
@@ -429,6 +1141,13 @@ let last = performance.now(), mapTick = 0;
 function loop(now){
   requestAnimationFrame(loop);
   const dt = Math.min((now-last)/1000, .05); last = now;
+
+  // neon cycle: slow hue drift + gentle brightness pulse
+  neonHue = (neonHue + dt * .06) % 1;
+  const pulse = .55 + Math.sin(now * .003) * .12;
+  neonMat.color.setHSL(neonHue, 1, pulse);
+  abyssMat.color.setHSL(neonHue, 1, .10 + Math.sin(now * .003) * .03);
+
   if (running && bits) {
     step(dt);
     elapsed = (now - t0)/1000;
@@ -439,35 +1158,81 @@ function loop(now){
 }
 requestAnimationFrame(loop);
 
+/* ---------------- leaderboard ----------------
+   Uses window.storage (shared) in the Claude artifact preview — scores are
+   visible to everyone playing the artifact. For the Vercel deploy, swap the
+   bodies of lbLoad()/lbStore() for Upstash Redis REST calls (GET/SET one key). */
+let lbLocal = [];   // last-resort fallback (session only)
+let playerName = null;                                   // ask once, then auto-save
+const runId = Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const esc = s => String(s).replace(/[<>&"]/g, '');
+const API = '/api/leaderboard';   // Vercel serverless function backed by Upstash
+
+// storage layers: Vercel API -> Claude artifact shared storage -> session memory
+async function lbLoad(){
+  try {
+    const r = await fetch(API);
+    if (r.ok) return await r.json();
+  } catch(e){}
+  try {
+    const r = await window.storage.get('leaderboard', true);
+    return r ? JSON.parse(r.value) : [];
+  } catch(e){ return lbLocal; }
+}
+async function submitScore(name, silent){
+  const entry = { id: runId, n: esc((name||'ANON').toUpperCase().slice(0,12)), s: totalScore, l: (tokenId??0)+1 };
+  let ok = false;
+  try {
+    const r = await fetch(API, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(entry)});
+    ok = r.ok;
+  } catch(e){}
+  if (!ok){
+    // fallback: client-side upsert into shared/local storage
+    let list = await lbLoad();
+    list = list.filter(e => e.id !== runId);
+    list.push({...entry, t: Date.now()});
+    list.sort((a,b)=>b.s-a.s);
+    list = list.slice(0,20);
+    lbLocal = list;
+    try { await window.storage.set('leaderboard', JSON.stringify(list), true); ok = true; } catch(e){}
+  }
+  if (!silent) toast(ok ? 'SAVED TO PUBLIC BOARD' : 'BOARD OFFLINE — SAVED LOCALLY');
+}
+async function showBoard(){
+  const list = await lbLoad();
+  document.getElementById('lbList').innerHTML = list.length
+    ? list.slice(0,10).map(e=>`<li><b>${esc(e.n)}</b> — ${(+e.s||0)} pts · LVL ${(+e.l||1)}</li>`).join('')
+    : '<li>No scores yet — be the first.</li>';
+  document.getElementById('lb').classList.remove('hidden');
+}
+
 /* ---------------- UI wiring ---------------- */
-const idInput = document.getElementById('idInput');
-const clampId = v => Math.max(0, Math.min(9999, v|0));
-document.getElementById('loadBtn').addEventListener('click', () => {
-  loadNormie(clampId(+idInput.value || 0)); running = true;
-  document.getElementById('win').classList.add('hidden');
+const cancelAuto = () => { clearTimeout(autoNextT); autoNextT = null; };
+document.getElementById('lbBtn').addEventListener('click', showBoard);
+document.getElementById('lbClose').addEventListener('click', () => document.getElementById('lb').classList.add('hidden'));
+document.getElementById('saveBtn').addEventListener('click', async () => {
+  playerName = document.getElementById('nameInput').value || 'ANON';
+  document.getElementById('saveRow').classList.add('hidden');   // ask once per run
+  await submitScore(playerName);
 });
-document.getElementById('randBtn').addEventListener('click', () => {
-  const id = Math.floor(Math.random()*10000);
-  idInput.value = id; loadNormie(id); running = true;
-  document.getElementById('win').classList.add('hidden');
-});
+document.getElementById('nameInput').addEventListener('focus', cancelAuto);
 document.getElementById('startBtn').addEventListener('click', () => {
   document.getElementById('intro').classList.add('hidden');
-  loadNormie(clampId(+idInput.value || 0)); running = true;
+  loadNormie(0); running = true;           // campaign always starts at Level 1
 });
-document.getElementById('againBtn').addEventListener('click', () => {
-  const id = Math.floor(Math.random()*10000);
-  idInput.value = id;
-  document.getElementById('win').classList.add('hidden');
-  loadNormie(id); running = true;
-});
+document.getElementById('againBtn').addEventListener('click', nextLevel);
 document.getElementById('replayBtn').addEventListener('click', () => {
+  cancelAuto();
+  // refund the just-earned score so replaying for a better time is fair
+  if (won){
+    totalScore -= lastPts; totalTime -= lastTSec; totalFalls -= lastFallsWon;
+    sScore.textContent = totalScore;
+  }
   document.getElementById('win').classList.add('hidden');
   respawn(spawn); elapsed = 0; falls = 0; won = false;
   sFalls.textContent = 0; t0 = performance.now(); running = true;
 });
 
-// initial idle camera framing
 camera.position.set(0, 18, 26);
 camera.lookAt(0, 0, 0);
 })();
